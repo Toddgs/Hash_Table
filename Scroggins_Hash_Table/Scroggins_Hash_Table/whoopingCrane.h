@@ -9,9 +9,9 @@ class whoopingCrane
 {
 	//Data values
 	int uniqueID;
-	char location[50];
+	char location[80];
 	double age;
-	char gender[8];
+	char gender[50];
 
 	//Friends and countrymen...
 	friend ostream &operator << (ostream& out, const whoopingCrane& theCrane);
@@ -21,7 +21,7 @@ public:
 	whoopingCrane(int theID, char *theLocation, double theAge, char *theGender);
 
 	//Destructors
-	~whoopingCrane();
+	//~whoopingCrane();
 
 	//Getters and Setters
 	int getID() const;
@@ -32,6 +32,9 @@ public:
 	void setLocation(char *theLocation);
 	void setAge(double theAge);
 	void setGender(char *theGender);
+
+	//helper functions
+	void print();
 
 };
 
