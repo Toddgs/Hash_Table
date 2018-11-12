@@ -67,7 +67,7 @@ void initializeHash()
 
 int hashME(int theID) //A function to hash the Crane's ID number.
 {
-
+	return 0;
 }
 
 void addNewCrane() //Function for adding a new crane, likely will just call the constructor for the crane with provided data.
@@ -124,6 +124,11 @@ void displayHashTable()
 	/*
 	This function needs to display the entire hash table and print out the cranes in their proper position. 
 	*/
+
+	for (const auto& n : hashMap)
+	{
+		cout << n.second << endl;
+	}
 }
 
 int main()
@@ -131,5 +136,7 @@ int main()
 	initializeHash();
 	
 	addNewCrane();
+
+	displayHashTable();
 	return 0;
 }
