@@ -14,19 +14,14 @@ using namespace std;
 
 //Globals...
 fstream craneFile;
+int maxHashSize = 19;
 unordered_map<int, whoopingCrane> hashMap;
 
+//Predefined functions
 
-void menu() //For displaying and possibly returning the menu options
-{
-	/*Menu needs to include:
-	1. Adding a new crane.
-	2. Searching for a crane by it's ID number.
-	3. Display all the cranes from a user defined area.
-	4. Remove a crane
-	5. Display the hash table with each cranes position. 
-	*/
-}
+
+
+
 
 void pressAnyKey() //Function for pausing the program, use getch.
 {
@@ -56,16 +51,20 @@ void initializeHash()
 		return;
 	}
 	*/
+
+	hashMap = { {1111, whoopingCrane(1111, (char *)"Mobile", 2.3, (char *)"Male")},
+				{5721, whoopingCrane(5721, (char *)"Florida", 3.5, (char *)"Female")},
+				{8246, whoopingCrane(8246, (char *)"Mobile", 1.2, (char *)"Male")},
+				{1843, whoopingCrane(1843, (char *)"Mississippi", 5.7, (char *)"Male")},
+				{6424, whoopingCrane(6424, (char *)"Mobile", 1.2, (char *)"Male")},
+				{9999, whoopingCrane(9999, (char *)"Mobile", 1.2, (char *)"Male")},
+	};
 	
-	
-	whoopingCrane theCrane = whoopingCrane(1111, (char *)"Mobile", 2.0, (char *)"Male");
-	hashMap[1111] = theCrane;
-	cout << hashMap[1111];
 }
 
 //Helper functions...
 
-int hashME(int theID) //A function to hash the Crane's ID number.
+int hashME(string theLocation) //A function to hash the Crane's ID number.
 {
 	return 0;
 }
@@ -109,6 +108,33 @@ void searchForCrane()
 	I'd like to be able to give them a way to search for them another way as well, 
 	maybe add a name to the class?
 	*/
+	int value;
+	cout << "What unique ID do you wish to search for?\n";
+	cin >> value;
+	int temp = hashMap.count(value);
+	
+	
+	if(temp == 1)
+	{ 
+		cout << hashMap[value] << endl;
+	}
+	else 
+	{
+		cout << "It ain't here son, try again.\n";
+	}
+}
+
+void searchByLocation()
+{
+	string searchedLocation;
+	cout << "Please enter a location to search for: \n";
+	getline(cin, searchedLocation);
+	pressAnyKey();
+	for (const auto& item : hashMap)
+	{
+		if (searchedLocation == item.second.getLocation())
+			cout << item.second.getID() << " is located in " << searchedLocation << endl;
+	}
 }
 
 void removeCrane()
@@ -117,6 +143,23 @@ void removeCrane()
 	This function needs to remove a listed crane. Again, can prolly reuse most of the search code
 	and just add a delete function to that.
 	*/
+	int key;
+	cout << "Which crane would you like to delete?\n";
+	cin >> key;
+	
+	int temp = hashMap.count(key);
+
+
+	if (temp == 1)
+	{
+		
+		cout << hashMap[key] << " has been deleted" << endl;
+		hashMap.erase(key);
+	}
+	else
+	{
+		cout << "It ain't here son, try again.\n";
+	}
 }
 
 void displayHashTable()
@@ -131,12 +174,73 @@ void displayHashTable()
 	}
 }
 
+void menu() //For displaying and possibly returning the menu options
+{
+	/*Menu needs to include:
+	1. Adding a new crane.
+	2. Searching for a crane by it's ID number.
+	3. Display all the cranes from a user defined area.
+	4. Remove a crane
+	5. Display the hash table with each cranes position.
+	*/
+	int choice;
+	bool theMeaningOfLife = true;
+	while (theMeaningOfLife)
+	{
+		cout << "Please select an option from the following menu:\n"
+			<< "1. Add a new Whooping Crane to the list.\n"
+			<< "2. Search for a Whooping Crane by it's ID number.\n"
+			<< "3. Display all the cranes from a user defined area.\n"
+			<< "4. Remove a crane.\n"
+			<< "5. Display the hash table with each cranes position.\n"
+			<< "6. Exit the program\n";
+		cin >> choice;
+		cin.ignore();
+		switch (choice)
+		{
+		case 1:
+		{
+			addNewCrane();
+			pressAnyKey();
+			break;
+		}
+		case 2:
+		{
+			searchForCrane();
+			pressAnyKey();
+			break;
+		}
+		case 3:
+		{
+			searchByLocation();
+			pressAnyKey();
+			break;
+		}
+		case 4:
+		{
+			removeCrane();
+			pressAnyKey();
+			break;
+		}
+		case 5:
+		{
+			displayHashTable();
+			pressAnyKey();
+			break;
+		}
+		case 6:
+		{
+			theMeaningOfLife = false;
+			pressAnyKey();
+			break;
+		}
+		}
+	}
+}
+
 int main()
 {
 	initializeHash();
-	
-	addNewCrane();
-
-	displayHashTable();
+	menu();
 	return 0;
 }
