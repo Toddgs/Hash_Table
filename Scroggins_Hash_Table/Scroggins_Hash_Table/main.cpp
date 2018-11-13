@@ -12,15 +12,21 @@
 
 using namespace std;
 
+//Function declarations
+void pressAnyKey();
+void initializeHash();
+int hashME(int theID);
+void addNewCrane();
+void searchForCrane();
+void searchByLocation();
+void removeCrane();
+void displayHashTable();
+
 //Globals...
 fstream craneFile;
 int maxHashSize = 19;
+const whoopingCrane placeHolderCrane(0000, (char *)"----------------------", 0.0, (char *)"-------");
 unordered_map<int, whoopingCrane> hashMap;
-
-//Predefined functions
-
-
-
 
 
 void pressAnyKey() //Function for pausing the program, use getch.
@@ -33,25 +39,6 @@ void pressAnyKey() //Function for pausing the program, use getch.
 
 void initializeHash()
 {
-	/*
-	This function needs to be called first, create the hash table and then populate it with 
-	6 hand coded cranes. We need to set a hash table size of 19.
-	*/
-
-	
-	
-	//Open the file.
-	/*
-	craneFile.open("craneFile.bin", ios::in | ios::out | ios::binary | ios::trunc);
-	if (!craneFile)
-	{
-		cout << "Hash file error - file didn't open successfully\n"
-			<< "Program will end.";
-		pressAnyKey();
-		return;
-	}
-	*/
-
 	hashMap = { {1111, whoopingCrane(1111, (char *)"Mobile", 2.3, (char *)"Male")},
 				{5721, whoopingCrane(5721, (char *)"Florida", 3.5, (char *)"Female")},
 				{8246, whoopingCrane(8246, (char *)"Mobile", 1.2, (char *)"Male")},
@@ -64,7 +51,7 @@ void initializeHash()
 
 //Helper functions...
 
-int hashME(string theLocation) //A function to hash the Crane's ID number.
+int hashME(int theID) //A function to hash the Crane's ID number.
 {
 	return 0;
 }
