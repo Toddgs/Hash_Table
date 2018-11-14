@@ -39,21 +39,21 @@ void pressAnyKey() //Function for pausing the program, use getch.
 
 void initializeHash()
 {
-	hashMap = { {1111, whoopingCrane(1111, (char *)"Mobile", 2.3, (char *)"Male")},
-				{5721, whoopingCrane(5721, (char *)"Florida", 3.5, (char *)"Female")},
-				{8246, whoopingCrane(8246, (char *)"Mobile", 1.2, (char *)"Male")},
-				{1843, whoopingCrane(1843, (char *)"Mississippi", 5.7, (char *)"Male")},
-				{6424, whoopingCrane(6424, (char *)"Mobile", 1.2, (char *)"Male")},
-				{9999, whoopingCrane(9999, (char *)"Mobile", 1.2, (char *)"Male")},
+	hashMap = { {hashME(1111), whoopingCrane(1111, (char *)"Mobile", 2.3, (char *)"Male")},
+				{hashME(5721), whoopingCrane(5721, (char *)"Florida", 3.5, (char *)"Female")},
+				{hashME(8246), whoopingCrane(8246, (char *)"Mobile", 1.2, (char *)"Male")},
+				{hashME(1843), whoopingCrane(1843, (char *)"Mississippi", 5.7, (char *)"Male")},
+				{hashME(6424), whoopingCrane(6424, (char *)"Mobile", 1.2, (char *)"Male")},
+				{hashME(9999), whoopingCrane(9999, (char *)"Mobile", 1.2, (char *)"Male")},
 	};
-	
 }
 
 //Helper functions...
 
 int hashME(int theID) //A function to hash the Crane's ID number.
 {
-	return 0;
+	int hashedID = theID / maxHashSize;
+	return hashedID;
 }
 
 void addNewCrane() //Function for adding a new crane, likely will just call the constructor for the crane with provided data.
@@ -84,8 +84,8 @@ void addNewCrane() //Function for adding a new crane, likely will just call the 
 	copy(tempGender.begin(), tempGender.end(), theGender);
 	theGender[tempGender.size()] = '\0';
 	whoopingCrane theCrane = whoopingCrane(theID, theLocation, theAge, theGender);
-	hashMap[theID] = theCrane;
-	cout << hashMap[theID] << endl;
+	hashMap[hashME(theID)] = theCrane;
+	cout << hashMap[hashME(theID)] << endl;
 }
 
 void searchForCrane()
@@ -99,7 +99,6 @@ void searchForCrane()
 	cout << "What unique ID do you wish to search for?\n";
 	cin >> value;
 	int temp = hashMap.count(value);
-	
 	
 	if(temp == 1)
 	{ 
@@ -134,14 +133,12 @@ void removeCrane()
 	cout << "Which crane would you like to delete?\n";
 	cin >> key;
 	
-	int temp = hashMap.count(key);
-
+	int temp = hashMap.count(hashME(key));
 
 	if (temp == 1)
 	{
-		
-		cout << hashMap[key] << " has been deleted" << endl;
-		hashMap.erase(key);
+		cout << hashMap[hashME(key)] << " has been deleted" << endl;
+		hashMap.erase(hashME(key));
 	}
 	else
 	{
@@ -154,10 +151,9 @@ void displayHashTable()
 	/*
 	This function needs to display the entire hash table and print out the cranes in their proper position. 
 	*/
-
-	for (const auto& n : hashMap)
+	for (const auto& item : hashMap)
 	{
-		cout << n.second << endl;
+		cout << item.second << endl;
 	}
 }
 
