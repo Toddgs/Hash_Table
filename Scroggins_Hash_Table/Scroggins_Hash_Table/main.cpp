@@ -14,18 +14,18 @@ using namespace std;
 
 //Function declarations
 void pressAnyKey();
-void initializeHash();
+int initializeHash();
 int hashME(int theID);
 void addNewCrane();
 void searchForCrane();
 void searchByLocation();
 void removeCrane();
 void displayHashTable();
+void addActualCrane(int attempts, int theID, whoopingCrane theCrane);
 
 //Globals...
 fstream craneFile;
 int maxHashSize = 19;
-const whoopingCrane placeHolderCrane(0000, (char *)"----------------------", 0.0, (char *)"-------");
 unordered_map<int, whoopingCrane> hashMap;
 
 
@@ -37,8 +37,17 @@ void pressAnyKey() //Function for pausing the program, use getch.
 
 //Startup functions...
 
-void initializeHash()
+int initializeHash()
 {
+	craneFile.open("craneFile.dat", ios::in | ios::out | ios::binary | ios::trunc);
+	if (!craneFile)
+	{
+		cout << "File error - file didn't open properly\n"
+			<< "Program will end.\n";
+		pressAnyKey();
+		return 1;
+	}
+
 	hashMap = { {hashME(1111), whoopingCrane(1111, (char *)"Mobile", 2.3, (char *)"Male")},
 				{hashME(5721), whoopingCrane(5721, (char *)"Florida", 3.5, (char *)"Female")},
 				{hashME(8246), whoopingCrane(8246, (char *)"Mobile", 1.2, (char *)"Male")},
@@ -60,8 +69,6 @@ void addNewCrane() //Function for adding a new crane, likely will just call the 
 {
 	int theID, theAge;
 	string tempLocation, tempGender;
-	//char *theLocation, *theGender;
-	//ID, Location, Age, Gender
 	cout << "To add a new Whooping Crane we will need some information\n"
 		<< "What is the Unique ID of the crane? (4 digit number)\n";
 	cin >> theID;
@@ -84,28 +91,67 @@ void addNewCrane() //Function for adding a new crane, likely will just call the 
 	copy(tempGender.begin(), tempGender.end(), theGender);
 	theGender[tempGender.size()] = '\0';
 	whoopingCrane theCrane = whoopingCrane(theID, theLocation, theAge, theGender);
-	hashMap[hashME(theID)] = theCrane;
-	cout << hashMap[hashME(theID)] << endl;
+	
+	int attempts = 0;
+	addActualCrane(attempts, theID, theCrane);
 }
 
-void searchForCrane()
+void addActualCrane(int attempts, int theID, whoopingCrane theCrane)
+{
+
+	int temp = hashMap.count(hashME(theID) + attempts);
+	if (temp == 1)
+	{
+		if (attempts == 0 || attempts == 1)
+		{
+			attempts++;
+		}
+		else
+		{
+			attempts = attempts * attempts;
+		}
+
+		addActualCrane(attempts, theID, theCrane);
+	}
+	else
+	{
+		hashMap[hashME(theID) + attempts] = theCrane;
+		cout << hashMap[hashME(theID) + attempts] << endl;
+		return;
+	}
+}
+
+void searchForCrane(int value, int attempts)
 {
 	/*
 	This function needs to search for a crane by it's ID at the very least.
 	I'd like to be able to give them a way to search for them another way as well, 
 	maybe add a name to the class?
 	*/
-	int value;
-	cout << "What unique ID do you wish to search for?\n";
-	cin >> value;
-	int temp = hashMap.count(value);
 	
+	int temp = hashMap.count(hashME(value) + attempts);
+	cout << attempts << endl;
 	if(temp == 1)
 	{ 
-		cout << hashMap[value] << endl;
+		if (hashMap[hashME(value) + attempts].getID == value) //FIXME having a problem right here, can't compare the ID to the passed value because reasons.
+			cout << hashMap[hashME(value) + attempts] << endl;
+		else
+		{
+			if (attempts == 0 || attempts == 1)
+				attempts++;
+			else
+				attempts = attempts ^ 2;
+			searchForCrane(value, attempts);
+			cout << "It ain't here son, try again.\n";
+		}
 	}
 	else 
 	{
+		if (attempts == 0 || attempts == 1)
+			attempts++;
+		else
+			attempts = attempts ^ 2;
+		searchForCrane(value, attempts);
 		cout << "It ain't here son, try again.\n";
 	}
 }
@@ -189,7 +235,12 @@ void menu() //For displaying and possibly returning the menu options
 		}
 		case 2:
 		{
-			searchForCrane();
+			int value, attempts;
+			cout << "What unique ID do you wish to search for?\n";
+			cin >> value;
+			attempts = 0;
+			searchForCrane(value, attempts);
+			cin.ignore();
 			pressAnyKey();
 			break;
 		}
@@ -221,9 +272,25 @@ void menu() //For displaying and possibly returning the menu options
 	}
 }
 
+void readBinary(int pos, whoopingCrane& theCrane)
+{
+	craneFile.seekg(pos * sizeof(whoopingCrane));
+	craneFile.read((char *)&theCrane, sizeof(whoopingCrane));
+}
+
+void writeBinary(int pos, whoopingCrane theCrane)
+{
+	craneFile.seekp(pos * sizeof(whoopingCrane));
+	craneFile.write((char *)&theCrane, sizeof(whoopingCrane));
+	craneFile.flush();
+	craneFile.seekp(0 * sizeof(whoopingCrane));
+}
+
+
 int main()
 {
 	initializeHash();
 	menu();
 	return 0;
 }
+
