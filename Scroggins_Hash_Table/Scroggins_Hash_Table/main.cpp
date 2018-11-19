@@ -17,7 +17,7 @@ void pressAnyKey();
 int initializeHash();
 int hashME(int theID);
 void addNewCrane();
-void searchForCrane();
+void searchForCrane(int value);
 void searchByLocation();
 void removeCrane();
 void displayHashTable();
@@ -121,7 +121,7 @@ void addActualCrane(int attempts, int theID, whoopingCrane theCrane)
 	}
 }
 
-void searchForCrane(int value, int attempts)
+void searchForCrane(int value)
 {
 	/*
 	This function needs to search for a crane by it's ID at the very least.
@@ -129,30 +129,10 @@ void searchForCrane(int value, int attempts)
 	maybe add a name to the class?
 	*/
 	
-	int temp = hashMap.count(hashME(value) + attempts);
-	cout << attempts << endl;
-	if(temp == 1)
-	{ 
-		if (hashMap[hashME(value) + attempts].getID == value) //FIXME having a problem right here, can't compare the ID to the passed value because reasons.
-			cout << hashMap[hashME(value) + attempts] << endl;
-		else
-		{
-			if (attempts == 0 || attempts == 1)
-				attempts++;
-			else
-				attempts = attempts ^ 2;
-			searchForCrane(value, attempts);
-			cout << "It ain't here son, try again.\n";
-		}
-	}
-	else 
+	for (const auto& item : hashMap)
 	{
-		if (attempts == 0 || attempts == 1)
-			attempts++;
-		else
-			attempts = attempts ^ 2;
-		searchForCrane(value, attempts);
-		cout << "It ain't here son, try again.\n";
+		if (value == item.second.getID())
+			cout << item.second.getID() << " was found." << endl << item.second << endl;
 	}
 }
 
@@ -238,8 +218,7 @@ void menu() //For displaying and possibly returning the menu options
 			int value, attempts;
 			cout << "What unique ID do you wish to search for?\n";
 			cin >> value;
-			attempts = 0;
-			searchForCrane(value, attempts);
+			searchForCrane(value);
 			cin.ignore();
 			pressAnyKey();
 			break;
